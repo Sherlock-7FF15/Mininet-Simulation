@@ -29,6 +29,12 @@ def create_network():
     info('*** Starting network\n')
     net.start()
 
+    info('*** Running socket server\n')
+
+    for node in hosts:
+        node.cmd('python ./node_udp_server.py &')
+        node.cmd('python ./node_udp_client.py &')
+
     info('*** Running CLI\n')
     while True:
         command = input('Input Command> ')
@@ -41,20 +47,3 @@ def create_network():
         CLI(net)
     info('*** Stopping network')
     net.stop()
-
-def udp_server(host, port):
-    s_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s_socket.bind((host, port))
-    info('UDP server listening on {}:{}'.format(host, port))
-
-    # Udp Server Listen
-    while True:
-        data, address = s_socket.recvfrom(1024)
-        print('Received data: {}'.format(data.decode()))
-        s_socket.sendto(data, address)
-
-def udp_client(host, port, data):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_socket.sendto(str(data).encode(), (host, port))
-    response, _ = client_socket.recvfrom(1024)
-    print('Received response: {}'.format(response.decode()))
