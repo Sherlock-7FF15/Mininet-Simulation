@@ -3,7 +3,7 @@ from mininet.net import Mininet
 from mininet.node import OVSController
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
-import socket
+import network_flow_capture
 
 
 def create_network():
@@ -32,8 +32,9 @@ def create_network():
     info('*** Running socket server\n')
 
     for node in hosts:
-        node.cmd('python ./node_udp_server.py &')
-        node.cmd('python ./node_udp_client.py &')
+        node.cmd('python3 ./node_udp_server.py &')
+        node.cmd('python3 ./node_udp_client.py &')
+
 
     info('*** Running CLI\n')
     while True:
@@ -42,6 +43,9 @@ def create_network():
             for node in hosts:
                 # This can be replaced with DDoS attack code
                 node.cmd('ping -c 50 10.0.0.21 &')
+        if command == 'start track':
+            for node in hosts:
+                node.cmd('sudo python3 ./network_flow_capture.py --time {} &'.format(5))
         if command == 'exit':
             break
         CLI(net)

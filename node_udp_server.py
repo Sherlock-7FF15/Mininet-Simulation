@@ -1,5 +1,6 @@
 import socket
 
+
 def get_ip_address():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -11,6 +12,7 @@ def get_ip_address():
     finally:
         sock.close()
 
+
 def udp_server(host, port):
     s_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s_socket.bind((host, port))
@@ -19,6 +21,7 @@ def udp_server(host, port):
     while True:
         data, address = s_socket.recvfrom(1024)
         print ('Received data from {} : {}'.format(address, data.decode()))
+
 
 node_ip = get_ip_address()
 node_port = 9564
