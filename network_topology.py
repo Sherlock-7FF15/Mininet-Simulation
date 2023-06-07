@@ -39,13 +39,13 @@ def create_network():
     info('*** Running CLI\n')
     while True:
         command = input('Input Command> ')
-        if command == 'start':
-            for node in hosts:
-                # This can be replaced with DDoS attack code
-                node.cmd('ping -c 50 10.0.0.21 &')
-        if command == 'start track':
-            for node in hosts:
-                node.cmd('sudo python3 ./network_flow_capture.py --time {} &'.format(5))
+        # if command == 'start':
+        #     for node in hosts:
+        #         # This can be replaced with DDoS attack code
+        #         node.cmd('ping -c 50 10.0.0.21 &')
+        # if command == 'start track':
+        #     for node in hosts:
+        #         node.cmd('sudo python3 ./network_flow_capture.py --time {} &'.format(5))
         if command == 'exit':
             break
         CLI(net)
