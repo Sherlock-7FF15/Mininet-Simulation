@@ -18,7 +18,7 @@ def packet_capture(dev, ti):
             break
         try:
             (header, packet) = pc.next()
-            parsed_packet = Ether(packet)  # decode the original packet to scapy packet
+            parsed_packet = Ether(packet)  # decode the original packet to scapy packet (only tcp and udp based packets)
             if IP in parsed_packet:
                 ip_layer = parsed_packet[IP]
                 packet_info = {
@@ -48,6 +48,6 @@ def network_capture(ti):
 if __name__ == '__main__':
     # network_flow_capture.py [-h] [--time TIME]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--time", type=int, default=10)
+    parser.add_argument("--time", type=int, default=100)
     args = parser.parse_args()
     network_capture(args.time)

