@@ -5,8 +5,11 @@ from mininet.net import Mininet
 from mininet.node import OVSController
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
+import random
 
 import pandas as pd
+import threading
+
 
 def create_network():
     """Create a network with 10 hosts and one server."""
@@ -38,30 +41,32 @@ def create_network():
     info('*** Running socket server\n')
 
     for node in hosts:
+        node.cmd('python3 ./network_flow_capture.py ')
+    # Sharing packet volume within past 1 second. This code will be executed forever.
+    for node in hosts:
         node.cmd('python3 ./node_udp_server.py &')
-        node.cmd('python3 ./node_udp_client.py &')
-
-    node_time_control(hosts, 1)
-
+        node.cmd('python3 ./node_udp_client.py --t 5 &')
 
     info('*** Running CLI\n')
+    threads = []
     while True:
         command = input('Input Command> ')
-        # if command == 'start':
-        #     for node in hosts:
-        #         # This can be replaced with DDoS attack code
-        #         node.cmd('ping -c 50 10.0.0.21 &')
-        # if command == 'start track':
-        #     for node in hosts:
-        #         node.cmd('sudo python3 ./network_flow_capture.py --time {} &'.format(5))
+        if command == 'start':
+            # Start simulation
+            t = threading.Thread(target=node_time_control, args=(hosts, 0.5))
+            t.start()
+            threads.append(t)
         if command == 'exit':
+            for t in threads:
+                t.join()
             break
-        CLI(net)
+        if command == 'CLI':
+            CLI(net)
     info('*** Stopping network')
     net.stop()
 
 
-def node_time_control(hosts, sleep_time):
+def node_time_control(hosts, time_interval):
     act_dic = dict()
     file_path = '/home/ee597/Desktop/MiniTest/dataFile/NODE_{}.csv'
     file_list = ['1152', '13101', '23093', '25668', '27068', '27638', '28381', '31867', '31973', '33925']
@@ -81,8 +86,19 @@ def node_time_control(hosts, sleep_time):
         if start_time - time.time() > 300:
             break
         clk += 1
-        print(clk)
         for node in hosts:
-            print(node, act_dic[node][clk])
-        print('----------------------------')
-        time.sleep(sleep_time)
+            if act_dic[node][clk] == 1:
+                node.cmd('sudo ./benign_behavior.py --time 1 --n 10 --sleep 0.1')
+            # print(node, act_dic[node][clk])
+            # print(clk)
+        # print('----------------------------')
+        time.sleep(time_interval)
+
+
+def ddos_attack(hosts, perc):
+    nums = random.sample(range(len(hosts)), int(perc*len(hosts)))
+    selected_nodes = []
+    for i in nums:
+        selected_nodes.append(hosts[i])
+    for node in selected_nodes:
+        node.cmd('sudo ./ddos_attack_simulation.py')

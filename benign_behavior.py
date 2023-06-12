@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import argparse
 import random
 import string
@@ -33,6 +34,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--time", type=float, default=10)
     parser.add_argument("--n", type=int, default=10)
-    parser.add_argument("--sleep", type=float, default=3)
+    parser.add_argument("--sleep", type=float, default=1)
     args = parser.parse_args()
     choose_and_send(args.time, args.n, args.sleep)

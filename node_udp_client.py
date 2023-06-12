@@ -18,7 +18,7 @@ def client(int_time):
         pre_val = new_val
         for i in range(1,11):
             target_ip = '10.0.0.{}'.format(i)
-            c_socket.sendto(str(throughput), (target_ip, 9564))
+            c_socket.sendto(str(throughput).encode('utf-8'), (target_ip, 9564))
         time.sleep(int_time)
 
 
