@@ -9,11 +9,11 @@ def client(int_time):
     c_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # Record the network throughput value
     io_counters = psutil.net_io_counters()
-    pre_val = io_counters.packets_recv
+    pre_val = io_counters.packets_recv + io_counters.packets_sent
     while True:
         # Update value and calculate throughput
         io_counters = psutil.net_io_counters()
-        new_val = io_counters.packets_recv
+        new_val = io_counters.packets_recv + io_counters.packets_sent
         throughput = new_val - pre_val
         pre_val = new_val
         for i in range(1,11):

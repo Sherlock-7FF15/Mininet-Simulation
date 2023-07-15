@@ -33,9 +33,7 @@ def udp_server(host, port):
     # Udp Server Listen
     while True:
         data, address = s_socket.recvfrom(1024)
-        current_timestamp = time.time()
-        current_datetime = datetime.fromtimestamp(current_timestamp)
-        formatted_time = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_time = datetime.now()
         packet_info = {
             'data': data.decode(),
             'address': address[0],
@@ -48,7 +46,8 @@ def udp_server(host, port):
             writer.writerow(packet_info)
 
 
-node_ip = get_ip_address()
-node_port = 9564
-print ('{}:9564'.format(node_ip))
-udp_server(node_ip, node_port)
+if __name__ == '__main__':
+    node_ip = get_ip_address()
+    node_port = 9564
+    print('{}:9564'.format(node_ip))
+    udp_server(node_ip, node_port)

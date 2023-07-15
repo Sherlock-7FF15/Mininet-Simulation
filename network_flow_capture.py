@@ -52,7 +52,7 @@ def packet_capture(dev, file_name):
                     'ttl': ip_layer.ttl,
                     'protocol': ip_layer.proto
                 }
-                print(packet_info)
+                # print(packet_info)
                 # write data into csv
                 with open(path, 'a') as file:
                     writer = csv.DictWriter(file, fieldnames=['packet_length', 'packet_frame_len', 'source_ip',
