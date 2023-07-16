@@ -13,11 +13,11 @@ import os
 
 def ddos_experiment(packet_volume_interval, traffic_file_name, k, attack_ratio, duration):
     victim_ip = '10.0.0.100'
-    node_number = 50
-    sleep_time = 0.2
-    start_min = 0.1
+    node_number = 10
+    sleep_time = 0.07
+    start_min = 10
     end_min = start_min+duration
-    active_time = 1
+    active_time = 5
     attack_start = 0
     duration_delta = timedelta(seconds=duration*60)
     ip_list = []
@@ -84,7 +84,7 @@ def node_time_control(active_time, start_min, end_min, prec, k, sleep, victim_ip
     start_time = time.time()
     clk = 0
     while True:
-        if clk > 20:
+        if clk > 428:
             break
         clk += 1
         if start_min <= clk < end_min:
@@ -107,7 +107,7 @@ def node_time_control(active_time, start_min, end_min, prec, k, sleep, victim_ip
         print('Sending End Signal to {}'.format(node))
         active_control_client(node, active_time, sleep, 0, False, True, victim_ip, clk, node_number, prec,
                               attack_start, duration)
-        time.sleep(3)
+        # time.sleep(3)
 
 
 def active_control_client(ip, active_time, sleep, k, is_ddos, is_end, victim_ip, clk, node_number, attack_ratio,
@@ -188,5 +188,5 @@ if __name__ == '__main__':
     #     for perc in Ratio:
     #         for t in duration:
     #             time.sleep(20)
-    ddos_experiment(args.t, args.name, 5, 1, 1)
+    ddos_experiment(args.t, args.name, 5, 1, 10)
 

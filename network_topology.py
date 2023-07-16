@@ -21,7 +21,7 @@ def create_network():
     info('*** Adding hosts\n')
     server = net.addHost('server', ip='10.0.0.100')
     hosts = []
-    for n in range(1, 52):
+    for n in range(1, 12):
         host_name = 'h{}'.format(n)
         host_ip = '10.0.0.{}'.format(n)
         host = net.addHost(host_name, ip=host_ip)
