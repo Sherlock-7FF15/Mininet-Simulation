@@ -39,7 +39,7 @@ def udp_server(host, port):
             'address': address[0],
             'time': formatted_time
         }
-        print('Received data from {} : {}'.format(address, data.decode()))
+        # print('Received data from {} : {}'.format(address, data.decode()))
         with open(path, 'a') as file:
             writer = csv.DictWriter(file,
                                     fieldnames=['data', 'address', 'time'])

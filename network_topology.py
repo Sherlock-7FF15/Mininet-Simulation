@@ -19,9 +19,9 @@ def create_network():
     net.addController('c0')
 
     info('*** Adding hosts\n')
-    server = net.addHost('server', ip='10.0.0.21')
+    server = net.addHost('server', ip='10.0.0.100')
     hosts = []
-    for n in range(1, 12):
+    for n in range(1, 52):
         host_name = 'h{}'.format(n)
         host_ip = '10.0.0.{}'.format(n)
         host = net.addHost(host_name, ip=host_ip)
@@ -41,9 +41,8 @@ def create_network():
     for host in hosts:
         if i == len(hosts) - 1:
             break
-        host.cmd('sudo ./main_client.py > ./{}_output.txt &'.format(host.IP()))
-    time.sleep(5)
-    hosts[-1].cmd('sudo ./main_server.py &')
+        host.cmd('sudo ./main_client.py > ./dataFile/terminal_output/{}_output.txt &'.format(host.IP()))
+        i += 1
     CLI(net)
     info('*** Stopping network')
     net.stop()
