@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, end_time, duration, k, active_list,
                     ddos_list, active_time, victim_ip):
+    print('node {} start processing'.format(node_ip))
     data_info = ['BEGIN_DATE',
                  'END_DATE',
                  'NUM_NODES',
@@ -24,14 +25,15 @@ def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, e
 
     # file_list = ['1152', '13101', '23093', '25668', '27068', '27638', '28381', '31867', '31973', '33925']
     ip_list = []
-    for n in range(1, 11):
+    for n in range(1, node_num+1):
         host_ip = '10.0.0.{}'.format(n)
         ip_list.append(host_ip)
-    ip_list.remove(victim_ip)
+    if victim_ip in ip_list:
+        ip_list.remove(victim_ip)
     for node in ip_list:
-        data_info.append('PACKET_{}'.format(node[-1:]))
-        data_info.append('NODE_{}'.format(node[-1:]))
-    path = '/home/ee597/Desktop/MiniTest/dataFile/packet_volume/packet_volume_info_{}.csv'.format(node_ip[-1:])
+        data_info.append('PACKET_{}'.format(node[7:]))
+        data_info.append('NODE_{}'.format(node[7:]))
+    path = './dataFile/packet_volume/packet_volume_info_{}.csv'.format(node_ip[7:])
     try:
         with open(path, 'w') as file:
             writer = csv.DictWriter(file, fieldnames=data_info)
@@ -61,7 +63,7 @@ def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, e
     # read node activity data and processing
 
     # write data
-    with open('./dataFile/packet_volume/packet_volume_info_{}.csv'.format(node_ip[-1:]), 'a') as file:
+    with open('./dataFile/packet_volume/packet_volume_info_{}.csv'.format(node_ip[7:]), 'a') as file:
         writer = csv.DictWriter(file,
                                 fieldnames=data_info)
         hour_data = -1
@@ -99,7 +101,7 @@ def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, e
                 'ATTACK_START_TIME': attack_start,
                 'ATTACK_DURATION': duration,
                 'ATTACK_PARAMETER': k,
-                'NODE': node_ip[-1:],
+                'NODE': node_ip[7:],
                 'LAT': 50.46388319,
                 'LNG': 35.37576942,
                 'TIME': current,
@@ -110,15 +112,15 @@ def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, e
             }
             for node in ip_list:
                 if node == node_ip:
-                    packet_info['NODE_{}'.format(node[-1:])] = 1
-                    packet_info['PACKET_{}'.format(node[-1:])] = packet_num
+                    packet_info['NODE_{}'.format(node[7:])] = 1
+                    packet_info['PACKET_{}'.format(node[7:])] = packet_num
                     continue
-                packet_info['NODE_{}'.format(node[-1:])] = 0
-                packet_info['PACKET_{}'.format(node[-1:])] = 0
+                packet_info['NODE_{}'.format(node[7:])] = 0
+                packet_info['PACKET_{}'.format(node[7:])] = 0
                 for data in packet_volume_info[node]:
                     if current < datetime.strptime(data['time'], "%Y-%m-%d %H:%M:%S.%f") <= current + timedelta(
                             seconds=active_time):
-                        packet_info['PACKET_{}'.format(node[-1:])] = int(data['data'])
+                        packet_info['PACKET_{}'.format(node[7:])] = int(data['data'])
                         break
             print(packet_info)
             writer.writerow(packet_info)

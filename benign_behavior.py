@@ -15,7 +15,7 @@ def udp_send(act_time, sleep_time):
         if time.time() - start_time > act_time:
             break
         ip_list = [
-            '10.0.0.21'
+            '10.0.0.100'
         ]
         c_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         length = random.randint(40, 60)

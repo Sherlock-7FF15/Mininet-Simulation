@@ -12,18 +12,18 @@ import os
 
 
 def ddos_experiment(packet_volume_interval, traffic_file_name, k, attack_ratio, duration):
-    ip_list = []
-    for n in range(1, 11):
-        host_ip = '10.0.0.{}'.format(n)
-        ip_list.append(host_ip)
-    victim_ip = '10.0.0.3'
-    node_number = 10
+    victim_ip = '10.0.0.100'
+    node_number = 50
     sleep_time = 0.2
-    start_min = 0.5
+    start_min = 0.1
     end_min = start_min+duration
     active_time = 1
     attack_start = 0
     duration_delta = timedelta(seconds=duration*60)
+    ip_list = []
+    for n in range(1, node_number+2):
+        host_ip = '10.0.0.{}'.format(n)
+        ip_list.append(host_ip)
     for ip in ip_list:
         if ip == victim_ip:
             continue
@@ -49,13 +49,16 @@ def ddos_experiment(packet_volume_interval, traffic_file_name, k, attack_ratio, 
     time.sleep(20)
     final_data_processing(victim_ip, ip_list, k, attack_ratio, active_time, duration)
     print('Data Integration Ends')
-    time.sleep(20)
+    # time.sleep(20)
 
 
 def node_time_control(active_time, start_min, end_min, prec, k, sleep, victim_ip, node_number, attack_start, duration):
     act_dic = dict()
     file_path = './dataFile/NODE_{}.csv'
-    file_list = ['1152', '13101', '23093', '25668', '27068', '27638', '28381', '31867', '31973', '33925']
+    df = pd.read_csv('./dataFile/benign_data_2021-01-02 00_00_00_2021-02-01 23_59_58_time_step_600_num_ids_50.csv')
+    file_list = df['NODE'].unique().tolist()
+    # print(nodes)
+    # file_list = ['1152', '13101', '23093', '25668', '27068', '27638', '28381', '31867', '31973', '33925']
     file_path_list = []
     start_min = start_min * 60 / active_time
     end_min = end_min * 60 / active_time
@@ -81,7 +84,7 @@ def node_time_control(active_time, start_min, end_min, prec, k, sleep, victim_ip
     start_time = time.time()
     clk = 0
     while True:
-        if clk > 40:
+        if clk > 20:
             break
         clk += 1
         if start_min <= clk < end_min:
@@ -104,6 +107,7 @@ def node_time_control(active_time, start_min, end_min, prec, k, sleep, victim_ip
         print('Sending End Signal to {}'.format(node))
         active_control_client(node, active_time, sleep, 0, False, True, victim_ip, clk, node_number, prec,
                               attack_start, duration)
+        time.sleep(3)
 
 
 def active_control_client(ip, active_time, sleep, k, is_ddos, is_end, victim_ip, clk, node_number, attack_ratio,
@@ -160,7 +164,7 @@ def final_data_processing(victim_ip, ip_list, k, ratio, active_time, duration):
     for host in ip_list:
         if host == victim_ip:
             continue
-        file_path = local_file_path.format(host[-1:])
+        file_path = local_file_path.format(host[7:])
         if not os.path.exists(file_path):
             print('File does not exist:', file_path)
             continue
