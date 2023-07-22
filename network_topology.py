@@ -1,19 +1,28 @@
 #!/usr/bin/env python3
-import time
 
+import time
 from mininet.net import Mininet
-from mininet.node import OVSController
+from mininet.node import Controller, OVSSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 import random
-
 import pandas as pd
 import threading
 
 
+class OVSController(Controller):
+    def start(self):
+        "Overridden start() to run ovs-vsctl"
+        self.cmd("ovs-vsctl --no-wait init")
+
+    def stop(self):
+        "Overridden stop() to stop ovs-vsctl"
+        self.cmd("ovs-vsctl --no-wait exit")
+
+
 def create_network():
     """Create a network with 10 hosts and one server."""
-    net = Mininet(controller=OVSController)
+    net = Mininet(controller=OVSController, switch=OVSSwitch)
 
     info('*** Adding controller\n')
     net.addController('c0')
@@ -46,3 +55,5 @@ def create_network():
     CLI(net)
     info('*** Stopping network')
     net.stop()
+
+
