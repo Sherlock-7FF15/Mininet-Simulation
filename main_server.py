@@ -11,17 +11,18 @@ import paramiko
 import os
 
 
-def ddos_experiment(packet_volume_interval, traffic_file_name, k, attack_ratio, duration):
+def ddos_experiment(k, attack_ratio, duration, memo):
+    time.sleep(10)
     victim_ip = '10.0.0.100'
-    node_number = 10
+    node_number = 50
     sleep_time = 0.07
-    start_min = 10
-    end_min = start_min+duration
-    active_time = 5
-    attack_start = 0
-    duration_delta = timedelta(seconds=duration*60)
+    start_min = 10  # Attack start minute
+    end_min = start_min + duration  # Attack end minute
+    active_time = 5  # This is the time step
+    attack_start = 0  # It should always be 0 to record the exact attack start time
+    duration_delta = timedelta(seconds=duration * 60)
     ip_list = []
-    for n in range(1, node_number+2):
+    for n in range(1, node_number + 2):
         host_ip = '10.0.0.{}'.format(n)
         ip_list.append(host_ip)
     for ip in ip_list:
@@ -46,8 +47,8 @@ def ddos_experiment(packet_volume_interval, traffic_file_name, k, attack_ratio, 
     formatted_time = current_time.strftime('%Y-%m-%d %H:%M:%S.%f')
     print('Ending Time', formatted_time)
     print('Experiments End')
-    time.sleep(20)
-    final_data_processing(victim_ip, ip_list, k, attack_ratio, active_time, duration)
+    time.sleep(200)
+    final_data_processing(victim_ip, ip_list, k, attack_ratio, active_time, duration, memo)
     print('Data Integration Ends')
     # time.sleep(20)
 
@@ -65,7 +66,7 @@ def node_time_control(active_time, start_min, end_min, prec, k, sleep, victim_ip
     for path in file_list:
         file_path_list.append(file_path.format(path))
     ip_list = []
-    for n in range(1, node_number+1):
+    for n in range(1, node_number + 1):
         host_ip = '10.0.0.{}'.format(n)
         ip_list.append(host_ip)
     nums = random.sample(range(len(ip_list)), int(prec * len(ip_list)))
@@ -158,7 +159,7 @@ def file_transferring_and_generating(host, port, username, password, remote_file
     transport.close()
 
 
-def final_data_processing(victim_ip, ip_list, k, ratio, active_time, duration):
+def final_data_processing(victim_ip, ip_list, k, ratio, active_time, duration, memo):
     local_file_path = './dataFile/packet_volume/packet_volume_info_{}.csv'
     final_data = pd.DataFrame()
     for host in ip_list:
@@ -171,22 +172,15 @@ def final_data_processing(victim_ip, ip_list, k, ratio, active_time, duration):
         print('Processing data from', host)
         df = pd.read_csv(file_path)
         final_data = pd.concat([final_data, df], ignore_index=True)
-    final_data.to_csv('./dataFile/final_data/{}_{}_{}_data.csv'.format(k, ratio, duration),
+    final_data.to_csv('./dataFile/final_data/{}_{}_{}_{}_data.csv'.format(k, ratio, duration, memo),
                       index=False)
-
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--t", type=float, default=1)
-    parser.add_argument("--name", type=str, default='traffic')
+    parser.add_argument("--k", type=int, default=1)
+    parser.add_argument("--ratio", type=float, default=1)
+    parser.add_argument("--duration", type=float, default=10)
+    parser.add_argument("--memo", type=str, default='training')
     args = parser.parse_args()
-    # k_para = [0, 0.5, 1]
-    # Ratio = [0.5, 1]
-    # duration = [10, 20]
-    # for k in k_para:
-    #     for perc in Ratio:
-    #         for t in duration:
-    #             time.sleep(20)
-    ddos_experiment(args.t, args.name, 5, 1, 10)
-
+    ddos_experiment(args.k, args.ratio, args.duration, args.memo)

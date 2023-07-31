@@ -20,7 +20,7 @@ def get_ip_address():
 def udp_server(host, port):
     s_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s_socket.bind((host, port))
-    path = '/home/ee597/Desktop/MiniTest/dataFile/packet_volume/{}.csv'.format(host)
+    path = './dataFile/packet_volume/{}.csv'.format(host)
     print('UDP server listening on {}:{}'.format(host, port))
     # check whether the target file exist
     try:

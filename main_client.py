@@ -51,6 +51,7 @@ def ddos_experiment(traffic_file_name):
     current_time = datetime.now()
     current_time = current_time.strftime('%Y-%m-%d %H:%M:%S.%f')
     formatted_time = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S.%f')
+    print("Experiment End Time: ", formatted_time)
     data_processing(set_up_dic['node_ip'],
                     ret_dic['start_time'],
                     set_up_dic['node_number'],

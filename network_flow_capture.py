@@ -17,7 +17,7 @@ from scapy.layers.l2 import Ether
 def packet_capture(dev, file_name):
     # print(dev)
     pc = pcapy.open_live(dev, 65536, 1, 0)
-    path = '/home/ee597/Desktop/MiniTest/dataFile/output_data/{}.csv'.format(file_name)
+    path = './dataFile/output_data/{}.csv'.format(file_name)
     prev_packet_time = None
 
     # check whether the target file exist
