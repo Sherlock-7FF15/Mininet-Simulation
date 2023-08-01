@@ -72,6 +72,8 @@ def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, e
                 hour_data = (hour_data + 1) % 24
             current = start_time + timedelta(seconds=active_time * i)
             if current > end_time:
+                print('current_time: ', current)
+                print('end time: ', end_time)
                 break
             active = 0
             attacked = 0

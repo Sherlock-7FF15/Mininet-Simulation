@@ -2,7 +2,7 @@
 import time
 
 from mininet.net import Mininet
-from mininet.node import OVSController
+from mininet.node import Controller, OVSKernelSwitch, OVSController
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 import random
@@ -37,12 +37,26 @@ def create_network():
 
     info('*** Starting network\n')
     net.start()
-    i = 0
-    for host in hosts:
-        if i == len(hosts) - 1:
-            break
-        host.cmd('sudo ./main_client.py > ./dataFile/terminal_output/{}_output.txt &'.format(host.IP()))
-        i += 1
-    CLI(net)
+    k_para = [5, 10]
+    ratio = [1]
+    duration = [10, 20]
+    data_set = ['training', 'testing', 'validation']
+    for k in k_para:
+        for r in ratio:
+            for t in duration:
+                for memo in data_set:
+                    i = 0
+                    for host in hosts:
+                        if i == len(hosts) - 1:
+                            time.sleep(60)
+                            print('Experiment {} {} {} {} Start'.format(k, r, t, memo))
+                            host.cmd('sudo ./main_server.py --k {} --ratio {} --duration {} --memo {} '
+                                     '> ./dataFile/terminal_output/{}_output.txt'
+                                     .format(k, r, t, memo, host.IP()))
+                            break
+                        host.cmd('sudo ./main_client.py > ./dataFile/terminal_output/{}_output.txt &'.format(host.IP()))
+                        i += 1
+                    time.sleep(200)
+    # CLI(net)
     info('*** Stopping network')
     net.stop()
