@@ -25,7 +25,7 @@ def data_processing(node_ip, start_time, node_num, attack_ratio, attack_start, e
 
     # file_list = ['1152', '13101', '23093', '25668', '27068', '27638', '28381', '31867', '31973', '33925']
     ip_list = []
-    for n in range(1, node_num+1):
+    for n in range(1, node_mnum+1):
         host_ip = '10.0.0.{}'.format(n)
         ip_list.append(host_ip)
     if victim_ip in ip_list:
